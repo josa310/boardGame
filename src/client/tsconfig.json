@@ -1,15 +1,15 @@
-{
+{ 
   "compilerOptions": {
-    "module": "commonjs",
-    "noImplicitAny": true,
+    "module": "amd",
     "sourceMap": true,
+    "noImplicitAny": true,
+    "target": "es6",
     "outDir": "../../dist",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+  },
+  "paths": {
+    "*": ["node_modules/*"]
   },
   "include": [
-    "**/*"
-  ]
+        "**/*"
+    ]
 }

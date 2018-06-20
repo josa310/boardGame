@@ -41,7 +41,7 @@ export class Server
     {
         console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
         var connection: connection = request.accept(null, request.origin); 
-        connection.sendUTF("Message Sent.");
+        connection.sendUTF("roleWindow,What role will you play?,Player,Master,Observer");
         var asd = Math.random();
         connection.on('message', (message: IMessage) => this.onWSMessage(message, asd)); 
     }
