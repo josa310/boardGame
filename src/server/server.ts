@@ -1,3 +1,5 @@
+import { PlayerEvent } from './event/PlayerEvent';
+import { Player } from './Player';
 import { server as WSServer, request, connection, IMessage} from "websocket";
 import * as http from "http";
 
@@ -7,9 +9,11 @@ export class Server
 
     protected _server: http.Server;
     protected _wsServer: WSServer;
+    protected _players: {[key: number]: Player};
 
     constructor()
     {
+        this._players = {};
         this.createHttpServer();
         this.createWebsocketServer();   
     }
@@ -41,19 +45,27 @@ export class Server
     {
         console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
         var connection: connection = request.accept(null, request.origin); 
-        connection.sendUTF("roleWindow,What role will you play?,Player,Master,Observer");
-        var asd = Math.random();
-        connection.on('message', (message: IMessage) => this.onWSMessage(message, asd)); 
+        let player = new Player(connection);
+        this._players[player.idx] = player;
+
+        player.addListener(PlayerEvent.MESSAGE, (e: PlayerEvent) => this.onMessage(e));
+        player.addListener(PlayerEvent.DISCONNECT, (e: PlayerEvent) => this.onPlayerLeave(e));
+
+        player.send("roleWindow,What role will you play?,Player,Master,Observer");
     }
 
-    protected onWSMessage(message: IMessage, idx: number): void
+    protected onMessage(e: PlayerEvent): void
     {
-        if (message.type)
+        let message: IMessage = e.message;
+        if (message.type == "utf8")
         {
             console.log(message.utf8Data);
         }
-        console.log(idx);
+        console.log(e.idx);
+    }
+
+    protected onPlayerLeave(e: PlayerEvent): void
+    {
+        console.log(e.idx);
     }
 }
-
-var asd = new Server();

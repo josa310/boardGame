@@ -25,7 +25,7 @@
   <body onload="play()">
     <script>
      function play() {
-        require(['dist/Game'], function (Game) {
+        require(['dist/client/Game'], function (Game) {
             var game = new Game.Game("ws://127.0.0.1:1337");
         });
     }

@@ -1,5 +1,7 @@
 import { Game } from "./Game";
-import { connection } from "../../node_modules/@types/websocket/index";
+import { connection, IMessage } from "websocket";
+import { EventDispatcher } from './../common/EventDispatcher';
+import { PlayerEvent } from "./event/PlayerEvent";
 
 export enum PlayerRole
 {
@@ -15,13 +17,18 @@ export enum Team
     GEEN = "Green"
 }
 
-export class Player
+export class Player extends EventDispatcher
 {
-    protected _role: PlayerRole;
+    protected static idx: number = 0;
+
     protected _team: Team;
     protected _game: Game;
+    protected _idx: number;
+    protected _role: PlayerRole;
     protected _isPlaying: boolean;
-    protected _connection: connection
+    protected _connection: connection;
+    protected _messageEvent: PlayerEvent;
+    protected _disconnectEvent: PlayerEvent;
 
     set role(value: PlayerRole)
     {
@@ -53,10 +60,32 @@ export class Player
         return this._game;
     }
 
+    get idx(): number
+    {
+        return this._idx;
+    }
+
     constructor(connection: connection)
     {
+        super();
+        this._idx = Player.idx++;
         this._connection = connection;
+
         this.reset();
+        this.createEvents();
+        this.setupEventListeners();
+    }
+    
+    protected setupEventListeners(): void
+    {
+        this._connection.on("message", (e: IMessage) => this.onMessage(e));
+        this._connection.on("close", () => this.onDisconnect());
+    }
+
+    protected createEvents(): void
+    {
+        this._messageEvent = new PlayerEvent(PlayerEvent.MESSAGE, this._idx);
+        this._disconnectEvent = new PlayerEvent(PlayerEvent.DISCONNECT, this._idx);
     }
 
     public reset(): void
@@ -70,5 +99,16 @@ export class Player
     public send(data: string): void
     {
         this._connection.sendUTF(data);
+    }
+
+    protected onDisconnect(): void
+    {
+        this.dispatch(this._disconnectEvent);
+    }
+
+    protected onMessage(message: IMessage): void
+    {
+        this._messageEvent.message = message;
+        this.dispatch(this._messageEvent);
     }
 }
