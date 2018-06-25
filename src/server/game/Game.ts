@@ -1,4 +1,4 @@
-import { Player, PlayerRole } from "./Player";
+import { Player, PlayerRole } from "../player/Player";
 
 export class Game
 {

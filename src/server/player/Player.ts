@@ -1,7 +1,7 @@
-import { Game } from "./Game";
 import { connection, IMessage } from "websocket";
-import { EventDispatcher } from './../common/EventDispatcher';
-import { PlayerEvent } from "./event/PlayerEvent";
+import { Game } from "../game/Game";
+import { PlayerEvent } from "../event/PlayerEvent";
+import { EventDispatcher } from "../../common/EventDispatcher";
 
 export enum PlayerRole
 {

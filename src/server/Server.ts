@@ -1,19 +1,26 @@
-import { PlayerEvent } from './event/PlayerEvent';
-import { Player } from './Player';
-import { server as WSServer, request, connection, IMessage} from "websocket";
 import * as http from "http";
+import { server as WSServer, request, connection, IMessage} from "websocket";
+
+import { Game } from './game/Game';
+import { Player } from './player/Player';
+import { Command, CommandCreator } from './../common/Command';
+import { PlayerEvent } from './event/PlayerEvent';
+import { GameHandler } from "./game/GameHandler";
+import { PlayerHandler } from "./player/PlayerHandler";
 
 export class Server
 {
     public static readonly WSSERVER_PORT: number = 1337;
 
-    protected _server: http.Server;
     protected _wsServer: WSServer;
-    protected _players: {[key: number]: Player};
+    protected _server: http.Server;
+    protected _gameHandler: GameHandler;
+    protected _playerHandler: PlayerHandler;
 
     constructor()
     {
-        this._players = {};
+        this._playerHandler = new PlayerHandler();
+        this._gameHandler = new GameHandler(this._playerHandler);
         this.createHttpServer();
         this.createWebsocketServer();   
     }
@@ -46,12 +53,8 @@ export class Server
         console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
         var connection: connection = request.accept(null, request.origin); 
         let player = new Player(connection);
-        this._players[player.idx] = player;
 
-        player.addListener(PlayerEvent.MESSAGE, (e: PlayerEvent) => this.onMessage(e));
-        player.addListener(PlayerEvent.DISCONNECT, (e: PlayerEvent) => this.onPlayerLeave(e));
-
-        player.send("roleWindow,What role will you play?,Player,Master,Observer");
+        this._playerHandler.playerConnect(player);
     }
 
     protected onMessage(e: PlayerEvent): void

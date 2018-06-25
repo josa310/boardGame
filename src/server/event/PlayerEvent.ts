@@ -4,6 +4,7 @@ import { BaseEvent } from './../../common/EventDispatcher';
 export class PlayerEvent extends BaseEvent
 {
     public static readonly MESSAGE: string = "MESSAGE";
+    public static readonly CONNECT: string = "CONNECTED";
     public static readonly RECONNECT: string = "RECONNECTED";
     public static readonly DISCONNECT: string = "DISCONNECTED";
 
@@ -13,6 +14,11 @@ export class PlayerEvent extends BaseEvent
     public get idx(): number
     {
         return this._idx;
+    }
+
+    public set idx(value: number)
+    {
+        this._idx = value;
     }
 
     public get message(): IMessage
@@ -25,7 +31,7 @@ export class PlayerEvent extends BaseEvent
         this._message = value;
     }
 
-    constructor(type: string, idx: number)
+    constructor(type: string, idx: number = -1)
     {
         super(type);
         this._idx = idx;
