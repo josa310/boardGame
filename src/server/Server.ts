@@ -1,9 +1,7 @@
 import * as http from "http";
 import { server as WSServer, request, connection, IMessage} from "websocket";
 
-import { Game } from './game/Game';
 import { Player } from './player/Player';
-import { Command, CommandCreator } from './../common/Command';
 import { PlayerEvent } from './event/PlayerEvent';
 import { GameHandler } from "./game/GameHandler";
 import { PlayerHandler } from "./player/PlayerHandler";
@@ -54,7 +52,7 @@ export class Server
         var connection: connection = request.accept(null, request.origin); 
         let player = new Player(connection);
 
-        this._playerHandler.playerConnect(player);
+        this._playerHandler.newConnect(player);
     }
 
     protected onMessage(e: PlayerEvent): void

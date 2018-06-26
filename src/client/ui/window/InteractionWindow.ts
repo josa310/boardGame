@@ -1,17 +1,15 @@
-import { Connection } from "../Connection";
+import { Command } from "../../../common/Command";
 
 export class InteractionWindow
 {
     protected _root: HTMLElement;
     protected _window: HTMLDivElement;
     protected _headline: HTMLDivElement;
-    protected _selection: HTMLSelectElement;
     protected _button: HTMLButtonElement;
-    protected _connection: Connection;
+    protected _selection: HTMLSelectElement;
 
-    constructor(connection: Connection, root: HTMLElement)
+    constructor(root: HTMLElement)
     {
-        this._connection = connection;
         this._root = root;
 
         this.createElements();        
@@ -41,27 +39,30 @@ export class InteractionWindow
         return  div;
     }
 
-    public show(headline: string, options: string[]): void
+    public show(command: Command): void
     {
-        this._headline.innerText = headline;
-        this.updateSelectionElements(options);
+        this._headline.innerText = command.next();
+        this.updateSelectionElements(command);
         this._root.appendChild(this._window);
     }
     
-    protected updateSelectionElements(elements: string[]): void
+    protected updateSelectionElements(command: Command): void
     {
         this._selection.innerHTML = "";
-        for (let element of elements)
+
+        let text: string = command.next();
+        while (text)
         {
             var option = document.createElement("option");
-            option.text = element;
+            option.text = text;
             this._selection.add(option);
+
+            text = command.next();
         }
     }
 
     protected onButton(): void
     {
         this._root.removeChild(this._window);
-        this._connection.send(this._selection.options[this._selection.selectedIndex].value);
     }
 }

@@ -1,15 +1,21 @@
+import { Command } from './../common/Command';
+import { EventDispatcher } from "../common/EventDispatcher";
+import { CommandEvent } from "./event/CommandEvent";
 
-export class Connection
+export class Connection extends EventDispatcher
 {
-    // public static readonly WS_ADDRESS: string = "ws://127.0.0.1:1337";
-
     protected _address: string;    
+    protected _command: Command;
     protected _connection: WebSocket;
-    protected _listeners: ((data: string) => void)[];
+    protected _commandEvent: CommandEvent;
 
     constructor(address: string)
     {
+        super();
         this._address = address;
+        this._command = new Command();
+        this._commandEvent = new CommandEvent();
+        this._commandEvent.command = this._command;
 
         this.establishConnection();
     }
@@ -21,7 +27,6 @@ export class Connection
         this._connection.onopen = () => this.onOpen();
         this._connection.onerror = (e: Event) => this.onError(e);
         this._connection.onmessage = (e: MessageEvent) => this.onMessage(e);
-        this._listeners = new Array<(data: string) => void>();
     }
     
     protected onOpen(): void
@@ -34,26 +39,14 @@ export class Connection
         console.log("Some error happened.", e);
     }
 
-    protected onMessage(message: MessageEvent): void
+    protected onMessage(event: MessageEvent): void
     {
-        this.dispatch(message.data);
+        this._command.processData(event.data);
+        this.dispatch(this._commandEvent);
     }
 
     public send(data: string): void
     {
         this._connection.send(data);
-    }
-
-    public addListener(listener: (data: string) => void): void
-    {
-        this._listeners.push(listener);
-    }
-
-    protected dispatch(data: string): void
-    {
-        for (let listener of this._listeners)
-        {
-            listener(data);
-        }
     }
 }

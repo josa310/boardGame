@@ -1,10 +1,13 @@
-import { Player } from '../player/Player';
 import { Game } from "./Game";
-import { PlayerHandler } from '../player/PlayerHandler';
+import { Command, Commands } from './../../common/Command';
 import { PlayerEvent } from '../event/PlayerEvent';
+import { PlayerHandler } from '../player/PlayerHandler';
+import { EventDispatcher } from "../../common/EventDispatcher";
 
-export class GameHandler
+export class GameHandler extends EventDispatcher
 {
+    protected _command: Command;
+    protected _numberOfGames: number;
     protected _games: {[key: string]: Game};
     protected _playerHandler: PlayerHandler;
 
@@ -15,7 +18,9 @@ export class GameHandler
 
     constructor(playerHandler: PlayerHandler)
     {
+        super();
         this._games = {};
+        this._command = new Command();
         this._playerHandler = playerHandler;
 
         this._playerHandler.addListener(PlayerEvent.CONNECT, (e: PlayerEvent) => this.onPlayerConnect(e));
@@ -25,16 +30,28 @@ export class GameHandler
    
     protected onPlayerConnect(e: PlayerEvent): void
     {
-        console.log("I know. Player Connected.");
+        this.sendGameList(e.idx);
     }
 
     protected onPlayerMessage(e: PlayerEvent): void
     {
-        console.log(e.message);
+        this.dispatch(e);
     }
 
     protected onPlayerLeave(e: PlayerEvent): void
     {
-        console.log("Poor Johny.");
+        this.dispatch(e);
+    }
+
+    protected sendGameList(idx: number): void
+    {
+        this._command.clear();
+        this._command.push(Commands.UI_MESSAGE).push(Commands.GAME_LIST);
+        for (let key in this._games)
+        {
+            this._command.push(key);
+        }
+        
+        this._playerHandler.getPlayerById(idx).send(this._command.toString());
     }
 }

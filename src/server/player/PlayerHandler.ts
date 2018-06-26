@@ -19,7 +19,7 @@ export class PlayerHandler extends EventDispatcher
         this._connectEvent = new PlayerEvent(PlayerEvent.CONNECT);
     }
 
-    public playerConnect(player: Player)
+    public newConnect(player: Player)
     {
         if (!this._players[player.idx])
         {
@@ -43,11 +43,10 @@ export class PlayerHandler extends EventDispatcher
 
     protected onPlayerLeave(e: PlayerEvent): void
     {
-        this._players
         this.dispatch(e);
     }
 
-    public getPlayerById(idx: string): Player
+    public getPlayerById(idx: number): Player
     {
         let player: Player = this._players[idx];
         return player ? player : null;
