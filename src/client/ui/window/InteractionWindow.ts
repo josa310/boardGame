@@ -1,6 +1,7 @@
-import { Command } from "../../../common/Command";
-import { Button } from "../elements/Button";
 import { Input } from "../elements/Input";
+import { Button } from "../elements/Button";
+import { Command } from "../../../common/Command";
+import { EventDispatcher } from "../../../common/EventDispatcher";
 import { InputFactory, InputTypes } from "../elements/InputFactory";
 
 export enum InteractionWindowButtons
@@ -11,22 +12,19 @@ export enum InteractionWindowButtons
     SEND = "Send"
 }
 
-export class InteractionWindow
+export class InteractionWindow extends EventDispatcher
 {
     protected _root: HTMLElement;
     protected _window: HTMLDivElement;
     protected _inputFactory: InputFactory;
     
-    protected _selection: HTMLSelectElement;
-
-    protected _headline: HTMLDivElement;
-    protected _buttons: {[key: string]: Button};
-
     protected _inputs: {[key: number]: Input};
+    protected _buttons: {[key: string]: Button};
     protected _inputValues: {[key: number]: string};
 
     constructor(root: HTMLElement)
     {
+        super();
         this._root = root;
 
         this._inputs = {};
@@ -47,18 +45,10 @@ export class InteractionWindow
     protected createElements(): void
     {
         this._window = this.createDiv("interactionWindow");
-        this._headline = this.createDiv("headline");
-        this._selection = document.createElement("select");
-
-        this._window.appendChild(this._headline);
-        this._window.appendChild(this._selection);
-
-        this._window.appendChild(this._inputs[0].node);
     }
 
     protected initButtons(): void
     {
-       this.initButton(InteractionWindowButtons.OK, () => this.onButton(), InteractionWindowButtons.OK);
     }
 
     protected createInputFactory(): void
@@ -68,7 +58,6 @@ export class InteractionWindow
 
     protected initInputs(): void
     {
-        this.createInput(0, InputTypes.TEXT);
     }
 
     protected initButton(name: string, callback: () => void, text: string, id: string = "", className: string = ""): Button
@@ -104,7 +93,6 @@ export class InteractionWindow
     protected onInputUpdate(idx: number, value: string): void
     {
         this._inputValues[idx] = value;
-        console.log("value");
     }
 
     protected createDiv(id: string = "", className: string = ""): HTMLDivElement
@@ -118,28 +106,6 @@ export class InteractionWindow
 
     public show(command: Command): void
     {
-        this._headline.innerText = command.next();
-        this.updateSelectionElements(command);
         this._root.appendChild(this._window);
-    }
-    
-    protected updateSelectionElements(command: Command): void
-    {
-        this._selection.innerHTML = "";
-
-        let text: string = command.next();
-        while (text)
-        {
-            var option = document.createElement("option");
-            option.text = text;
-            this._selection.add(option);
-
-            text = command.next();
-        }
-    }
-
-    protected onButton(): void
-    {
-        this._root.removeChild(this._window);
     }
 }

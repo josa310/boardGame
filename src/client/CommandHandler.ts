@@ -41,4 +41,9 @@ export class CommandHandler extends EventDispatcher
                 break;
         }
     }
+
+    public dispatchCommand(c: Command): void
+    {
+        this._connection.send(c.toString());
+    }
 }

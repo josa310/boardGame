@@ -1,5 +1,6 @@
 import { Input } from "./Input";
 import { TextField } from "./TextField";
+import { Selection } from "./Selection";
 
 export enum InputTypes
 {
@@ -19,6 +20,9 @@ export class InputFactory
             case InputTypes.TEXT:
                 return new TextField(idx, callback);
 
+            case InputTypes.SELECTION:
+                return new Selection(idx, callback);
+                
             default: 
                 return null;
         }

@@ -1,7 +1,7 @@
 export abstract class Input
 {
     protected _idx: number;
-    protected _node: HTMLInputElement;
+    protected _node: HTMLElement;
     protected _callback: (idx: number, value: string) => void;
 
     public get node(): HTMLElement 
@@ -9,15 +9,8 @@ export abstract class Input
         return this._node;
     }
 
-    public get value(): string 
-    {
-        return this._node.value;
-    }
-
-    public set value(value: string) 
-    {
-        this._node.value = value;
-    }
+    public abstract get value(): string;
+    public abstract set value(value: string);
 
     constructor(idx: number, onChange: (idx: number, value: string) => void) 
     {
@@ -27,10 +20,8 @@ export abstract class Input
         this.init();
     }
     
-    protected onChange(): void
-    {
-        this._callback(this._idx, this._node.value);
-    }
+    protected abstract onChange(): void;
+    protected abstract enable(enable: boolean): void;
     
     protected init(): void
     {

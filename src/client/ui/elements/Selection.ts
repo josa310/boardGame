@@ -1,9 +1,9 @@
 import { Input } from "./Input";
 
-export class TextField extends Input
+export class Selection extends Input
 {
-    protected _node: HTMLInputElement;
-    
+    protected _node: HTMLSelectElement;
+
     public get value(): string 
     {
         return this._node.value;
@@ -14,17 +14,16 @@ export class TextField extends Input
         this._node.value = value;
     }
 
-    protected createNode(): void 
-    {
-        this._node = document.createElement("input");
-        this._node.onchange = () => this.onChange();
-        this._node.type = "text";
-    }  
-    
     public enable(enable: boolean): void
     {
         this._node.disabled = !enable;
     }
+
+    protected createNode(): void 
+    {
+        this._node = document.createElement("select");
+        this._node.onchange = () => this.onChange();
+    }   
     
     protected onChange(): void
     {
@@ -33,6 +32,13 @@ export class TextField extends Input
     
     public setData(data: string[]): void 
     {
-        this._node.value = data[0];
+        this._node.innerHTML = "";
+
+        for (let text of data)
+        {
+            var option = document.createElement("option");
+            option.text = text;
+            this._node.add(option);
+        }
     }
 }
