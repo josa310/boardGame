@@ -29,7 +29,7 @@ export class CommandHandler extends EventDispatcher
         let command: Command = e.command;
         switch (command.next())
         {
-            case Commands.UI_MESSAGE: 
+            case Commands.UI_MESSAGE.toString(): 
                 this._uiCommandEvent.command = command;
                 this.dispatch(this._uiCommandEvent);
                 break;

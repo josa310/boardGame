@@ -25,7 +25,7 @@ export class UIHandler
 
         switch (command.next())
         {
-            case Commands.GAME_LIST:
+            case Commands.GAME_LIST.toString():
                 this._interactionWindow.show(command);
             break;
 

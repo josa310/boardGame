@@ -1,7 +1,7 @@
-import { ClientBase } from "./ClientBase";
+import { GametBase } from "./GameBase";
 
  
-export class Game extends ClientBase
+export class Game extends GametBase
 {
 
 }

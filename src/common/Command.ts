@@ -9,7 +9,7 @@ export enum Commands
     PLAYER_JOINED,
     GAME_RESET,
     GAME_LIST,
-    UI_MESSAGE = "UI_M",
+    UI_MESSAGE,
     SEPARATOR = "☺"
 }
 

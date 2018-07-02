@@ -2,7 +2,7 @@ import { UIHandler } from './ui/UIHandler';
 import { CommandHandler } from './CommandHandler';
 import { InteractionWindow } from './ui/window/InteractionWindow';
 
-export class ClientBase 
+export class GametBase 
 {
     protected _uiHandler: UIHandler;
     protected _commWindow: InteractionWindow;
