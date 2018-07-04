@@ -1,8 +1,10 @@
+import { GameTypes } from './../../common/GameTypes';
 import { Game } from "./Game";
 import { Command, Commands } from './../../common/Command';
 import { PlayerEvent } from '../event/PlayerEvent';
 import { PlayerHandler } from '../player/PlayerHandler';
 import { EventDispatcher } from "../../common/EventDispatcher";
+import { GameFactory } from "./GameFactory";
 
 export class GameHandler extends EventDispatcher
 {
@@ -10,6 +12,8 @@ export class GameHandler extends EventDispatcher
     protected _numberOfGames: number;
     protected _games: {[key: string]: Game};
     protected _playerHandler: PlayerHandler;
+    protected _gameFactory: GameFactory;
+    protected _gameIds: number;
 
     get games(): {[key: string]: Game}
     {
@@ -20,6 +24,7 @@ export class GameHandler extends EventDispatcher
     {
         super();
         this._games = {};
+        this._gameIds = 0;
         this._command = new Command();
         this._playerHandler = playerHandler;
 
@@ -35,7 +40,23 @@ export class GameHandler extends EventDispatcher
 
     protected onPlayerMessage(e: PlayerEvent): void
     {
-        this.dispatch(e);
+        if (e.message.type == "utf8")
+        {
+            this._command.processData(e.message.utf8Data);
+            switch (this._command.next())
+            {
+                case Commands.START_NEW_GAME.toString():
+                    this.startNewGame();
+                    break;
+
+                default:
+                    this.dispatch(e);
+            }
+        }
+        else
+        {
+            console.log("Invalid message type.");
+        }
     }
 
     protected onPlayerLeave(e: PlayerEvent): void
@@ -53,5 +74,14 @@ export class GameHandler extends EventDispatcher
         }
         
         this._playerHandler.getPlayerById(idx).send(this._command.toString());
+    }
+
+    protected startNewGame(): void
+    {
+        this._games[this._gameIds++] = this._gameFactory.createGame(
+            this._command.next() as GameTypes, 
+            this._command.next(), 
+            this._gameIds
+        );
     }
 }
