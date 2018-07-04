@@ -27,12 +27,18 @@ export class GameHandler extends EventDispatcher
         this._gameIds = 0;
         this._command = new Command();
         this._playerHandler = playerHandler;
+        this._gameFactory = this.createGameFactory();
 
         this._playerHandler.addListener(PlayerEvent.CONNECT, (e: PlayerEvent) => this.onPlayerConnect(e));
         this._playerHandler.addListener(PlayerEvent.MESSAGE, (e: PlayerEvent) => this.onPlayerMessage(e));
         this._playerHandler.addListener(PlayerEvent.DISCONNECT, (e: PlayerEvent) => this.onPlayerLeave(e));
     }
    
+    protected createGameFactory(): GameFactory
+    {
+        return new GameFactory();
+    }
+
     protected onPlayerConnect(e: PlayerEvent): void
     {
         this.sendGameList(e.idx);
@@ -46,7 +52,8 @@ export class GameHandler extends EventDispatcher
             switch (this._command.next())
             {
                 case Commands.START_NEW_GAME.toString():
-                    this.startNewGame();
+                    let newGame: Game = this.startNewGame();
+                    this.joinPlayer(e.idx, newGame.id);
                     break;
 
                 default:
@@ -70,18 +77,37 @@ export class GameHandler extends EventDispatcher
         this._command.push(Commands.UI_MESSAGE).push(Commands.GAME_LIST);
         for (let key in this._games)
         {
-            this._command.push(key);
+            this._command.push(this._games[key].name);
+            this._command.push(this._games[key].id);
         }
         
-        this._playerHandler.getPlayerById(idx).send(this._command.toString());
+        this.sendCommand(idx);
     }
 
-    protected startNewGame(): void
+    protected startNewGame(): Game
     {
-        this._games[this._gameIds++] = this._gameFactory.createGame(
-            this._command.next() as GameTypes, 
-            this._command.next(), 
-            this._gameIds
-        );
+        const gameType: GameTypes = <GameTypes>this._command.next();
+        const gameName: string = this._command.next();
+        const gameId: number = this._gameIds;
+
+        this._games[this._gameIds] = this._gameFactory.createGame(gameType, gameName, gameId);
+
+        return this._games[this._gameIds++];
+    }
+
+    protected joinPlayer(playerId: number, gameId: number): void
+    {
+        this._command.clear();
+        this._command.push(Commands.JOIN_GAME).
+            push(this._games[gameId].type).
+            push(this._games[gameId].name).
+            push(gameId);
+
+        this.sendCommand(playerId);
+    }
+
+    protected sendCommand(playerId: number): void
+    {
+        this._playerHandler.getPlayerById(playerId).send(this._command.toString());
     }
 }

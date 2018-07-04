@@ -7,6 +7,7 @@ export enum Commands
     END_GAME,
     PLAYER_LEFT,
     PLAYER_JOINED,
+    JOIN_GAME,
     GAME_RESET,
     GAME_LIST,
     UI_MESSAGE,
@@ -46,12 +47,14 @@ export class Command
     public clear(): void
     {
         this._data = new Array<string>();
+        this._dataIdx = 0;
+        this._numData = 0;
     }
 
     public push(data: any): Command
     {
         this._data.push(data.toString());
-
+        this._numData = this._data.length;
         return this;
     }
 

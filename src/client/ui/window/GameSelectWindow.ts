@@ -87,6 +87,7 @@ export class GameSelectWindow extends InteractionWindow
         while (gameName)
         {
             gameList.push(gameName);
+            gameName = command.next();
         }
 
         this._buttons[ButtonList.JOIN].enable(gameList.length > 0);

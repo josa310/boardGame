@@ -1,9 +1,11 @@
 import { Player, PlayerRole } from "../player/Player";
+import { GameTypes } from "../../common/GameTypes";
 
 export class Game
 {
     protected _id: number;
     protected _name: string;
+    protected _gameType: GameTypes;
     protected _isActive: boolean;
     protected _players: Player[];
     protected _avalibleRoles: PlayerRole[];
@@ -28,12 +30,18 @@ export class Game
         return this._players;
     }
 
+    public get type(): GameTypes
+    {
+        return this._gameType;
+    }
+
     constructor(name: string, id: number)
     {
         this._id = id;
         this._name = name;
         this._isActive = true;
         this._players = new Array<Player>();
+        this._gameType = GameTypes.CODE_NAMES;
     }
 
     protected setAvalibleRoles(): void
