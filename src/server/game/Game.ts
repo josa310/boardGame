@@ -1,14 +1,18 @@
-import { Player, PlayerRole } from "../player/Player";
+import { Player } from "../player/Player";
 import { GameTypes } from "../../common/GameTypes";
+import { PlayerEvent } from "../event/PlayerEvent";
+import { Command, Commands } from "../../common/Command";
+import { PlayerRole, Team } from "../../common/Enums";
 
-export class Game
+export abstract class Game
 {
     protected _id: number;
     protected _name: string;
-    protected _gameType: GameTypes;
+    protected _type: GameTypes;
+    protected _command: Command;
     protected _isActive: boolean;
-    protected _players: Player[];
-    protected _avalibleRoles: PlayerRole[];
+    protected _players: {[key: number]: Player};
+    protected _avalibleRoles: {[key: string]: PlayerRole[]};
 
     public set isActive(value: boolean)
     {
@@ -25,14 +29,14 @@ export class Game
         return this._id;
     }
 
-    public get players(): Player[]
+    public get players(): {[key: number]: Player}
     {
         return this._players;
     }
 
     public get type(): GameTypes
     {
-        return this._gameType;
+        return this._type;
     }
 
     constructor(name: string, id: number)
@@ -40,40 +44,55 @@ export class Game
         this._id = id;
         this._name = name;
         this._isActive = true;
+        this._command = new Command();
+        this._type = GameTypes.DEFAULT;
         this._players = new Array<Player>();
-        this._gameType = GameTypes.CODE_NAMES;
-    }
+        this._avalibleRoles = {};
 
-    protected setAvalibleRoles(): void
-    {
-
+        this.setAvalibleRoles();
     }
     
     public addPlayer(player: Player): boolean
     {
-        this._players.push(player);
+        this._players[player.idx] = player;
+        player.addListener(PlayerEvent.MESSAGE, (e: PlayerEvent) => this.onPlayerMessage(e));
+        
+        this.sendStartCommand(player);
         return true;
     }
-
+    
+    protected sendStartCommand(player: Player): void
+    {
+        this._command.clear();
+        this._command.push(Commands.START_NEW_GAME).
+        push(this._type).
+        push(this._id).
+        push(this._name);
+        
+        player.send(this._command.toString());
+    }
+    
     public removePlayer(player: Player): boolean
     {
-        let idx: number = this.players.indexOf(player);
-        if (idx > -1)
-        {
-            this._players.splice(idx, 1);
-        }
-
+        this._players[player.idx] = undefined;
+        
         return true;
     }
-
-    public get avalibleRoles(): PlayerRole[]
+    
+    public get avalibleRoles(): {[key: string]: PlayerRole[]}
     {
         return this._avalibleRoles;
     }
-
-    protected notifyPlayers(): void
+    
+    protected setAvalibleRoles(): void
     {
-
+        this._avalibleRoles[Team.RED] = new Array<PlayerRole>();
+        this._avalibleRoles[Team.BLUE] = new Array<PlayerRole>();
+        // this._avalibleRoles[Team.GREEN] = new Array<PlayerRole>();
+        this._avalibleRoles[Team.NEUTRAL] = new Array<PlayerRole>();
     }
+
+    protected abstract notifyPlayers(): void;
+    protected abstract onPlayerMessage(e: PlayerEvent): void;
     
 }

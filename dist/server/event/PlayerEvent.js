@@ -1,13 +1,16 @@
-define(["require", "exports", "./../../common/EventDispatcher"], function (require, exports, EventDispatcher_1) {
+define(["require", "exports", "../../common/event/BaseEvent"], function (require, exports, BaseEvent_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    class PlayerEvent extends EventDispatcher_1.BaseEvent {
-        constructor(type, idx) {
+    class PlayerEvent extends BaseEvent_1.BaseEvent {
+        constructor(type, idx = -1) {
             super(type);
             this._idx = idx;
         }
         get idx() {
             return this._idx;
+        }
+        set idx(value) {
+            this._idx = value;
         }
         get message() {
             return this._message;
@@ -17,6 +20,7 @@ define(["require", "exports", "./../../common/EventDispatcher"], function (requi
         }
     }
     PlayerEvent.MESSAGE = "MESSAGE";
+    PlayerEvent.CONNECT = "CONNECTED";
     PlayerEvent.RECONNECT = "RECONNECTED";
     PlayerEvent.DISCONNECT = "DISCONNECTED";
     exports.PlayerEvent = PlayerEvent;

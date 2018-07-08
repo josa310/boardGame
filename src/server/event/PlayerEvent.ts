@@ -1,5 +1,5 @@
 import { IMessage } from 'websocket';
-import { BaseEvent } from './../../common/EventDispatcher';
+import { BaseEvent } from '../../common/event/BaseEvent';
 
 export class PlayerEvent extends BaseEvent
 {

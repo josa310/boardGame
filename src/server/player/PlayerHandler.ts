@@ -1,6 +1,6 @@
 import { Player } from "./Player";
 import { PlayerEvent } from "../event/PlayerEvent";
-import { EventDispatcher } from "../../common/EventDispatcher";
+import { EventDispatcher } from "../../common/event/EventDispatcher";
 
 export class PlayerHandler extends EventDispatcher
 {

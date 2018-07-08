@@ -1,7 +1,7 @@
 import { Input } from "../elements/Input";
 import { Button } from "../elements/Button";
 import { Command } from "../../../common/Command";
-import { EventDispatcher } from "../../../common/EventDispatcher";
+import { EventDispatcher } from "../../../common/event/EventDispatcher";
 import { InputFactory, InputTypes } from "../elements/InputFactory";
 
 export enum InteractionWindowButtons
@@ -107,5 +107,10 @@ export class InteractionWindow extends EventDispatcher
     public show(command: Command): void
     {
         this._root.appendChild(this._window);
+    }
+
+    public hide(): void
+    {
+        this._root.removeChild(this._window);
     }
 }

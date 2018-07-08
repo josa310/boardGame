@@ -1,5 +1,6 @@
 import { Game } from './Game';
 import { GameTypes } from './../../common/GameTypes';
+import { CodeNames } from './games/CodeNames';
 
 export class GameFactory
 {
@@ -7,8 +8,11 @@ export class GameFactory
     {
         switch (type)
         {
+            case GameTypes.CODE_NAMES:
+                return new CodeNames(name, id);
+                
             default:
-                return new Game(name, id);
+                return null;
         }
     }
 }

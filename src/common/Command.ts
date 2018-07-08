@@ -1,5 +1,6 @@
 export enum Commands
 {
+    GAME_DATA,
     MESESSAGE,
     GAME_MESSAGE,
     SERVER_MESSAGE,
@@ -7,7 +8,10 @@ export enum Commands
     END_GAME,
     PLAYER_LEFT,
     PLAYER_JOINED,
+    SELECT_ROLE,
+    SET_ROLE,
     JOIN_GAME,
+    INIT_GAME,
     GAME_RESET,
     GAME_LIST,
     UI_MESSAGE,

@@ -3,6 +3,7 @@ import { InputTypes } from "../elements/InputFactory";
 import { CommandEvent } from "../../event/CommandEvent";
 import { Command, Commands } from "../../../common/Command";
 import { GameTypes } from "../../../common/GameTypes";
+import { Selection } from "../elements/Selection";
 
 enum InputList
 {
@@ -63,9 +64,11 @@ export class GameSelectWindow extends InteractionWindow
     protected onJoin(): void
     {
         this._command.clear();
-        this._command.push(Commands.PLAYER_JOINED).push(this._inputValues[InputList.GAME_SELECT])
+        this._command.push(Commands.JOIN_GAME).push(this._inputValues[InputList.GAME_SELECT])
 
         this.dispatch(this._commandEvent);
+
+        this.hide();
     }
 
     protected onStartNew(): void
@@ -76,6 +79,8 @@ export class GameSelectWindow extends InteractionWindow
             .push(this._inputValues[InputList.NEW_GAME_NAME_FIELD]);
 
         this.dispatch(this._commandEvent);
+
+        this.hide();
     }
 
     public show(command: Command): void
@@ -83,24 +88,31 @@ export class GameSelectWindow extends InteractionWindow
         super.show(command);
 
         let gameList: string[] = new Array<string>();
+        let gameIDs: string[] = new Array<string>();
         let gameName: string = command.next();
         while (gameName)
         {
             gameList.push(gameName);
+            gameIDs.push(command.next());
             gameName = command.next();
         }
 
         this._buttons[ButtonList.JOIN].enable(gameList.length > 0);
-        this._inputs[InputList.GAME_SELECT].setData(gameList)
+        (this._inputs[InputList.GAME_SELECT] as Selection).setDataWithValues(gameList, gameIDs);
 
         this._inputs[InputList.NEW_GAME_NAME_FIELD].setData([""]);
 
         let gameTypes: string[] = new Array<string>();
         for (let game in GameTypes)
         {
+            if (GameTypes[game] == GameTypes.DEFAULT)
+            {
+                continue;
+            }
             gameTypes.push(GameTypes[game]);
         }
         this._inputs[InputList.NEW_GAME_TYPE_FIELD].setData(gameTypes);
+        this._inputValues[InputList.GAME_SELECT] = this._inputs[InputList.GAME_SELECT].value;
         this._inputValues[InputList.NEW_GAME_TYPE_FIELD] = this._inputs[InputList.NEW_GAME_TYPE_FIELD].value;
     }
 }

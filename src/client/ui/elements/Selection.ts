@@ -41,4 +41,15 @@ export class Selection extends Input
             this._node.add(option);
         }
     }
+
+    public setDataWithValues(data: string[], values: string[]): void
+    {
+        this.setData(data);
+
+        let idx: number = 0;
+        for (let option of this._node.options)
+        {
+            option.value = values[idx++];
+        }
+    }
 }

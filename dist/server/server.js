@@ -1,9 +1,10 @@
-define(["require", "exports", "./event/PlayerEvent", "./Player", "websocket", "http"], function (require, exports, PlayerEvent_1, Player_1, websocket_1, http) {
+define(["require", "exports", "http", "websocket", "./player/Player", "./game/GameHandler", "./player/PlayerHandler"], function (require, exports, http, websocket_1, Player_1, GameHandler_1, PlayerHandler_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Server {
         constructor() {
-            this._players = {};
+            this._playerHandler = new PlayerHandler_1.PlayerHandler();
+            this._gameHandler = new GameHandler_1.GameHandler(this._playerHandler);
             this.createHttpServer();
             this.createWebsocketServer();
         }
@@ -26,10 +27,7 @@ define(["require", "exports", "./event/PlayerEvent", "./Player", "websocket", "h
             console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
             var connection = request.accept(null, request.origin);
             let player = new Player_1.Player(connection);
-            this._players[player.idx] = player;
-            player.addListener(PlayerEvent_1.PlayerEvent.MESSAGE, (e) => this.onMessage(e));
-            player.addListener(PlayerEvent_1.PlayerEvent.DISCONNECT, (e) => this.onPlayerLeave(e));
-            player.send("roleWindow,What role will you play?,Player,Master,Observer");
+            this._playerHandler.newConnect(player);
         }
         onMessage(e) {
             let message = e.message;

@@ -1,5 +1,5 @@
 import { Command } from './../../common/Command';
-import { BaseEvent } from "../../common/EventDispatcher";
+import { BaseEvent } from '../../common/event/BaseEvent';
 
 export class UICommandEvent extends BaseEvent
 {

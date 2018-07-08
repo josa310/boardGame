@@ -10,7 +10,6 @@ export enum InputTypes
     RADIO
 }
 
-
 export class InputFactory
 {
     public create(idx: number, type: number, callback: (idx: number, value: string) => void): Input

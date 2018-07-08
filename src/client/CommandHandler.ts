@@ -2,13 +2,13 @@ import { Command } from './../common/Command';
 import { CommandEvent } from './event/CommandEvent';
 import { Connection } from "./Connection";
 import { Commands } from '../common/Command';
-import { EventDispatcher } from './../common/EventDispatcher';
+import { EventDispatcher } from '../common/event/EventDispatcher';
 import { UICommandEvent } from "./event/UICommandEvent";
 
 export class CommandHandler extends EventDispatcher
 {
     protected _connection: Connection;
-    protected _uiCommandEvent: UICommandEvent;
+    protected _commandEvent: CommandEvent;
 
     constructor(address: string)
     {
@@ -21,25 +21,14 @@ export class CommandHandler extends EventDispatcher
 
     protected createEvents(): void
     {
-        this._uiCommandEvent = new UICommandEvent();
+        this._commandEvent = new CommandEvent();
     }
 
     protected onData(e: CommandEvent): void
     {
-        let command: Command = e.command;
-        switch (command.next())
-        {
-            case Commands.UI_MESSAGE.toString(): 
-                this._uiCommandEvent.command = command;
-                this.dispatch(this._uiCommandEvent);
-                break;
-
-            case "teamWindow":
-                break;
-            
-            default:
-                break;
-        }
+        this._commandEvent.type = e.command.next();
+        this._commandEvent.command = e.command;
+        this.dispatch(this._commandEvent);
     }
 
     public dispatchCommand(c: Command): void

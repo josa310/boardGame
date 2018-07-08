@@ -16,13 +16,22 @@ export class UIHandler
         this._root = document.body;
         this._commandHandler = commandHandler;
         
+        this.initWindows();
+        this.initListeners();        
+    }
+    
+    protected initWindows(): void
+    {
         this._gameSelectWindow = new GameSelectWindow(this._root);
+    }
+    
+    protected initListeners(): void
+    {
         this._gameSelectWindow.addListener(CommandEvent.COMMAND, (e: CommandEvent) => this.onResponse(e));
-
-        this._commandHandler.addListener(UICommandEvent.UI_COMMAND, (e: UICommandEvent) => this.onCommand(e));
+        this._commandHandler.addListener(Commands.UI_MESSAGE.toString(), (e: CommandEvent) => this.onCommand(e));
     }
 
-    protected onCommand(e: UICommandEvent): void
+    protected onCommand(e: CommandEvent): void
     {
         let command: Command = e.command;
 

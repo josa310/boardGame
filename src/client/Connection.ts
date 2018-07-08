@@ -1,5 +1,5 @@
 import { Command } from './../common/Command';
-import { EventDispatcher } from "../common/EventDispatcher";
+import { EventDispatcher } from "../common/event/EventDispatcher";
 import { CommandEvent } from "./event/CommandEvent";
 
 export class Connection extends EventDispatcher

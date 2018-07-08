@@ -3,7 +3,7 @@ import { Game } from "./Game";
 import { Command, Commands } from './../../common/Command';
 import { PlayerEvent } from '../event/PlayerEvent';
 import { PlayerHandler } from '../player/PlayerHandler';
-import { EventDispatcher } from "../../common/EventDispatcher";
+import { EventDispatcher } from "../../common/event/EventDispatcher";
 import { GameFactory } from "./GameFactory";
 
 export class GameHandler extends EventDispatcher
@@ -56,6 +56,10 @@ export class GameHandler extends EventDispatcher
                     this.joinPlayer(e.idx, newGame.id);
                     break;
 
+                case Commands.JOIN_GAME.toString():
+                    this.joinPlayer(e.idx, parseInt(this._command.next()));
+                    break;
+                
                 default:
                     this.dispatch(e);
             }
@@ -77,7 +81,7 @@ export class GameHandler extends EventDispatcher
         this._command.push(Commands.UI_MESSAGE).push(Commands.GAME_LIST);
         for (let key in this._games)
         {
-            this._command.push(this._games[key].name);
+            this._command.push(this._games[key].name + " (" + this._games[key].type + ")");
             this._command.push(this._games[key].id);
         }
         
@@ -90,20 +94,14 @@ export class GameHandler extends EventDispatcher
         const gameName: string = this._command.next();
         const gameId: number = this._gameIds;
 
-        this._games[this._gameIds] = this._gameFactory.createGame(gameType, gameName, gameId);
+        this._games[gameId] = this._gameFactory.createGame(gameType, gameName, gameId);
 
         return this._games[this._gameIds++];
     }
 
     protected joinPlayer(playerId: number, gameId: number): void
     {
-        this._command.clear();
-        this._command.push(Commands.JOIN_GAME).
-            push(this._games[gameId].type).
-            push(this._games[gameId].name).
-            push(gameId);
-
-        this.sendCommand(playerId);
+        this._games[gameId].addPlayer(this._playerHandler.getPlayerById(playerId));
     }
 
     protected sendCommand(playerId: number): void

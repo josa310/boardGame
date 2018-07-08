@@ -1,21 +1,8 @@
 import { connection, IMessage } from "websocket";
 import { Game } from "../game/Game";
 import { PlayerEvent } from "../event/PlayerEvent";
-import { EventDispatcher } from "../../common/EventDispatcher";
-
-export enum PlayerRole
-{
-    PLAYER = "Player",
-    MASTER = "Master",
-    OBSERVER = "Observer"
-}
-
-export enum Team
-{
-    RED = "Red",
-    BLUE = "Blue",
-    GEEN = "Green"
-}
+import { EventDispatcher } from "../../common/event/EventDispatcher";
+import { Team, PlayerRole } from "../../common/Enums";
 
 export class Player extends EventDispatcher
 {
