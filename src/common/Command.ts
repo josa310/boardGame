@@ -49,6 +49,11 @@ export class Command
         return null;
     }
 
+    public nextInt(): number
+    {
+        return parseInt(this.next());
+    }
+
     public clear(): void
     {
         this._data = new Array<string>();

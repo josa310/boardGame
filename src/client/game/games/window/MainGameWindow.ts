@@ -1,9 +1,17 @@
 import { InteractionWindow } from "../../../ui/window/InteractionWindow";
-import { Command } from "../../../../common/Command";
+import { Command, Commands } from "../../../../common/Command";
 import { Team } from "../../../../common/Enums";
+import { CommandEvent } from "../../../event/CommandEvent";
+
+enum Buttons
+{
+    PASS = "Pass"
+}
 
 export class MainGameWindow extends InteractionWindow
 {
+    protected _command: Command;
+    protected _commandEvent: CommandEvent;
     protected _teamDisplay: HTMLDivElement;
     protected _playerColors: {[key: string]: string};
 
@@ -12,6 +20,9 @@ export class MainGameWindow extends InteractionWindow
         super(root);
 
         this._playerColors = {};
+        this._command = new Command();
+        this._commandEvent = new CommandEvent();
+        this._commandEvent.command = this._command;
 
         this.setPlayerColors();
     }
@@ -39,6 +50,11 @@ export class MainGameWindow extends InteractionWindow
                 row.appendChild(this._buttons[(i*5 + j).toString()].node);
             }
         }
+
+        let passButtonContainer: HTMLElement = document.createElement("div");
+        passButtonContainer.appendChild(this._buttons[Buttons.PASS].node);
+
+        this._window.appendChild(passButtonContainer);
     }
 
     protected initButtons(): void
@@ -47,11 +63,16 @@ export class MainGameWindow extends InteractionWindow
         {
             this.initButton(idx.toString(), () => this.onButton(idx), "");
         }
+
+        this.initButton(Buttons.PASS, () => this.onButton(-1), Buttons.PASS);
     }
 
     protected onButton(idx: number): void
     {
-        console.log(idx);
+        this._command.clear();
+        this._command.push(Commands.GAME_DATA).push(idx);
+
+        this.dispatch(this._commandEvent);
     }
 
     public show(command: Command): void
@@ -59,8 +80,12 @@ export class MainGameWindow extends InteractionWindow
         super.show(command);
 
         let team: string = command.next();
-        this._teamDisplay.style.color = this._playerColors[team];
-        this._teamDisplay.innerText = (team == command.next()) ? "Your turn." : "Varja meg!";
+        this._teamDisplay.style.backgroundColor = this._playerColors[team];
+
+        const isActive: boolean = team == command.next();
+        this._teamDisplay.innerText = (isActive) ? "Your turn." : "Varja meg!";
+        
+        this.enableButtons(isActive);
 
         let text: string = command.next();
         let idx: number = 0;
@@ -71,6 +96,14 @@ export class MainGameWindow extends InteractionWindow
 
             text = command.next();
             idx++;
+        }
+    }
+
+    protected enableButtons(enable: boolean): void
+    {
+        for (let key in this._buttons)
+        {
+            this._buttons[key].enable(enable);
         }
     }
 }

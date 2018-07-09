@@ -35,16 +35,35 @@ export class CodeNames extends Game
     protected onPlayerMessage(e: PlayerEvent): void
     {
         this._command.processData(e.message.utf8Data);
+        let player = this._players[e.idx];
 
         switch (this._command.next())
         {
             case Commands.INIT_GAME.toString():
                 this.sendAvalibleRoles(e.idx);
-                return;
+                break;
 
             case Commands.SELECT_ROLE.toString():
                 this.setPlayerRole(e.idx);
                 break;
+            
+            case Commands.GAME_DATA.toString():
+                this.processGameCommand(player);
+        }
+    }
+
+    protected processGameCommand(player: Player): void
+    {
+        let buttonIdx: number = this._command.nextInt();
+        
+        if (buttonIdx == -1)
+        {
+            this.nextTurn();
+        }
+        else
+        {
+            this._board.pickField(buttonIdx);
+            this.notifyPlayers();
         }
     }
 
@@ -56,17 +75,18 @@ export class CodeNames extends Game
         let roleIdx: number = this._avalibleRoles[team].indexOf(role);
         if (roleIdx >= 0)
         {
+            this._players[idx].team = parseInt(team);
+            this._players[idx].role = role;
+
             if (role == PlayerRole.MASTER)
             {
                 this._avalibleRoles[team].splice(roleIdx, 1);
                 if (++this._numMasters == this._numTeams)
                 {
                     this.initGame();
+                    return;
                 }
             }
-
-            this._players[idx].team = parseInt(team);
-            this._players[idx].role = role;
 
             this._isActive ? this.sendBoard(idx) : this.sendWaitMessage(idx);
         }
@@ -123,6 +143,14 @@ export class CodeNames extends Game
 
     protected notifyPlayers(): void 
     {
+        for (let key in this._players)
+        {
+            const player: Player = this._players[key];
+            if (player)
+            {
+                this.sendBoard(player.idx);
+            }
+        }
     }
 
     protected setAvalibleRoles(): void 
@@ -146,21 +174,16 @@ export class CodeNames extends Game
 
     protected initGame(): void
     {
-        
-        this._turn++;
         this._isActive = true;
-        
         this._board.reset();
-
+        this.nextTurn();
+    }
+    
+    protected nextTurn(): void
+    {
+        this._turn++;
         this._activeTeam = this._teams[this._turn % this._numTeams];
-
-        for (let key in this._players)
-        {
-            const player: Player = this._players[key];
-            if (player)
-            {
-                this.sendBoard(player.idx);
-            }
-        }
+    
+        this.notifyPlayers();
     }
 }

@@ -74,6 +74,16 @@ export class Board
             "asdh", "tytyu", "bnmc", "iopsad", "uytasd"];
     }
 
+    public pickField(idx: number): number
+    {
+        const row: number = Math.floor(idx / Board.WIDTH);
+        const col: number = Math.floor(idx % Board.WIDTH);
+
+        this._revealed[row][col] = true;
+
+        return this._occupations[row][col];
+    }
+
     protected resetWords(): void
     {
         this._avalibleWords = this._avalibleWords.concat(this._usedWords);

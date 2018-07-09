@@ -119,6 +119,7 @@ export class InteractionWindow extends EventDispatcher
         if (this._shown) 
         {
             this._root.removeChild(this._window);
+            this._shown = false;
         }
     }
 }
