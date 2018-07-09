@@ -36,7 +36,7 @@ export class Board
             for (let j: number = 0; j < Board.HEIGHT; j++)
             {
                 retVal.push(this._words[i][j]);
-                retVal.push((this._revealed[i][i] || revealed) ? this._occupations[i][j].toString() : Team.NEUTRAL.toString());
+                retVal.push((this._revealed[i][j] || revealed) ? this._occupations[i][j].toString() : Team.NEUTRAL.toString());
             }
         }
 
