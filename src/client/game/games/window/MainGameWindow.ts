@@ -4,6 +4,7 @@ import { Team } from "../../../../common/Enums";
 
 export class MainGameWindow extends InteractionWindow
 {
+    protected _teamDisplay: HTMLDivElement;
     protected _playerColors: {[key: string]: string};
 
     constructor(root: HTMLElement)
@@ -25,6 +26,9 @@ export class MainGameWindow extends InteractionWindow
     protected createElements(): void
     {
         super.createElements();
+
+        this._teamDisplay = document.createElement("div");
+        this._window.appendChild(this._teamDisplay);
 
         for (let i: number = 0; i < 5; i++)
         {
@@ -53,6 +57,10 @@ export class MainGameWindow extends InteractionWindow
     public show(command: Command): void
     {
         super.show(command);
+
+        let team: string = command.next();
+        this._teamDisplay.style.color = this._playerColors[team];
+        this._teamDisplay.innerText = (team == command.next()) ? "Your turn." : "Varja meg!";
 
         let text: string = command.next();
         let idx: number = 0;

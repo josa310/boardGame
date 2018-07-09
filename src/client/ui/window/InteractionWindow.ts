@@ -14,6 +14,8 @@ export enum InteractionWindowButtons
 
 export class InteractionWindow extends EventDispatcher
 {
+    protected _shown: boolean;
+    
     protected _root: HTMLElement;
     protected _window: HTMLDivElement;
     protected _inputFactory: InputFactory;
@@ -26,6 +28,8 @@ export class InteractionWindow extends EventDispatcher
     {
         super();
         this._root = root;
+
+        this._shown = false;
 
         this._inputs = {};
         this._buttons = {};
@@ -107,10 +111,14 @@ export class InteractionWindow extends EventDispatcher
     public show(command: Command): void
     {
         this._root.appendChild(this._window);
+        this._shown = true;
     }
 
     public hide(): void
-    {
-        this._root.removeChild(this._window);
+    {   
+        if (this._shown) 
+        {
+            this._root.removeChild(this._window);
+        }
     }
 }

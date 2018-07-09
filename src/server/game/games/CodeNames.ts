@@ -9,14 +9,27 @@ import { Player } from "../../player/Player";
 export class CodeNames extends Game
 {
     protected _board: Board;
+    protected _numTeams: number;
+    protected _numMasters: number;
+
+    protected _turn: number;
+    protected _teams: Team[];
+    protected _activeTeam: Team;
 
     constructor(name: string, id: number)
     {
         super(name, id);
 
+        this._turn = 0;
+        this._numTeams = 0;
+        this._numMasters = 0;
         this._isActive = false;
         this._board = new Board();
+        this._teams = new Array<Team>();
         this._type = GameTypes.CODE_NAMES;
+
+        this.addTeam(Team.RED);
+        this.addTeam(Team.BLUE);
     }
 
     protected onPlayerMessage(e: PlayerEvent): void
@@ -46,10 +59,16 @@ export class CodeNames extends Game
             if (role == PlayerRole.MASTER)
             {
                 this._avalibleRoles[team].splice(roleIdx, 1);
+                if (++this._numMasters == this._numTeams)
+                {
+                    this.initGame();
+                }
             }
+
             this._players[idx].team = parseInt(team);
             this._players[idx].role = role;
-            this.sendBoard(idx);
+
+            this._isActive ? this.sendBoard(idx) : this.sendWaitMessage(idx);
         }
         else
         {
@@ -61,21 +80,28 @@ export class CodeNames extends Game
     {
         if (!this._isActive)
         {
-            this._board.reset();
-            this._isActive = true;
+            return;
         }
 
         const player: Player = this._players[idx];
         const board: string[] = this._board.getBoard(player.role == PlayerRole.MASTER);
         
         this._command.clear();
-        this._command.push(Commands.GAME_DATA);
+        this._command.push(Commands.GAME_DATA).push(player.team).push(this._activeTeam);
         for (let data of board)
         {
             this._command.push(data);
         }
         
         player.send(this._command.toString());
+    }
+
+    protected sendWaitMessage(idx: number): void
+    {
+        this._command.clear();
+        this._command.push(Commands.WAIT);
+        
+        this._players[idx].send(this._command.toString());
     }
 
     protected sendAvalibleRoles(idx: number): void
@@ -112,8 +138,29 @@ export class CodeNames extends Game
         this._avalibleRoles[Team.NEUTRAL].push(PlayerRole.PLAYER);
     }
 
+    protected addTeam(team: Team): void
+    {
+        this._teams.push(team);
+        this._numTeams++;
+    }
+
     protected initGame(): void
     {
+        
+        this._turn++;
+        this._isActive = true;
+        
+        this._board.reset();
 
+        this._activeTeam = this._teams[this._turn % this._numTeams];
+
+        for (let key in this._players)
+        {
+            const player: Player = this._players[key];
+            if (player)
+            {
+                this.sendBoard(player.idx);
+            }
+        }
     }
 }

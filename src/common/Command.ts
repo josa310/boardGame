@@ -1,5 +1,6 @@
 export enum Commands
 {
+    WAIT,
     GAME_DATA,
     MESESSAGE,
     GAME_MESSAGE,
