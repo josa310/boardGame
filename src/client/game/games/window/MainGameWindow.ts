@@ -62,7 +62,8 @@ export class MainGameWindow extends InteractionWindow
     {
         for (let idx: number = 0; idx < 25; idx++)
         {
-            this.initButton(idx.toString(), () => this.onButton(idx), "");
+            let button: HTMLElement = this.initButton(idx.toString(), () => this.onButton(idx), "").node;
+            button.classList.add("field");
         }
 
         this.initButton(Buttons.PASS, () => this.onButton(-1), Buttons.PASS);

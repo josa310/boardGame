@@ -1,0 +1,22 @@
+p 
+{
+    margin: 0;
+}
+
+@media screen and (orientation: landscape) 
+{
+    .field
+    {
+        width: 17vh;
+        height: 17vh;
+    }
+}
+  
+@media screen and (orientation: portrait) 
+{
+    .field
+    {
+        width: 17vw;
+        height: 17vw;
+    }
+}
