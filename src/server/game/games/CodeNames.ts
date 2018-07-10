@@ -15,6 +15,7 @@ export class CodeNames extends Game
     protected _turn: number;
     protected _teams: Team[];
     protected _activeTeam: Team;
+    protected _teamPoints: {[key: number]: number};
 
     constructor(name: string, id: number)
     {
@@ -27,6 +28,7 @@ export class CodeNames extends Game
         this._board = new Board();
         this._teams = new Array<Team>();
         this._type = GameTypes.CODE_NAMES;
+        this._teamPoints = {};
 
         this.addTeam(Team.RED);
         this.addTeam(Team.BLUE);
@@ -49,12 +51,22 @@ export class CodeNames extends Game
             
             case Commands.GAME_DATA.toString():
                 this.processGameCommand(player);
+                break;
+
+            case Commands.RESTART_GAME.toString():
+                this.initGame();
+                break;
         }
     }
 
     protected processGameCommand(player: Player): void
     {
         let buttonIdx: number = this._command.nextInt();
+
+        if (player.role == PlayerRole.MASTER || this._board.isRevealed(buttonIdx) || !this._isActive)
+        {
+            return;
+        }
         
         if (buttonIdx == -1)
         {
@@ -62,9 +74,52 @@ export class CodeNames extends Game
         }
         else
         {
-            this._board.pickField(buttonIdx);
+            const fieldOccupation: number = this._board.pickField(buttonIdx);
+            if (fieldOccupation == -1)
+            {
+                this.nextTeam();
+                this.gameOver(this._activeTeam);
+            }
+            else
+            {
+                if (this._teamPoints[fieldOccupation] != undefined)
+                {
+                    this._teamPoints[fieldOccupation]++;
+                    if (this._teamPoints[fieldOccupation] == Board.TEAM_FIELD_CNT)
+                    {
+                        this.gameOver(fieldOccupation);
+                        return;
+                    }
+                    else if (fieldOccupation != player.team)
+                    {
+                        this.nextTurn();
+                    }
+                }
+                else
+                {
+                    this.nextTurn();
+                }
+            }
             this.notifyPlayers();
         }
+    }
+
+    protected gameOver(winningTeam: Team): void
+    {
+        this.notifyPlayers();
+        
+        this._command.clear();
+        this._command.push(Commands.GAME_OVER).push(winningTeam);
+        for (let key in this._players)
+        {
+            const player: Player = this._players[key];
+            if (player)
+            {
+                player.send(this._command.toString());
+            }
+        }
+
+        this._isActive = false;
     }
 
     protected setPlayerRole(idx: number): void
@@ -169,11 +224,17 @@ export class CodeNames extends Game
     protected addTeam(team: Team): void
     {
         this._teams.push(team);
+        this._teamPoints[team] = 0;
         this._numTeams++;
     }
 
     protected initGame(): void
     {
+        for (let key in this._teamPoints)
+        {
+            this._teamPoints[key] = 0;
+        }
+
         this._isActive = true;
         this._board.reset();
         this.nextTurn();
@@ -181,9 +242,13 @@ export class CodeNames extends Game
     
     protected nextTurn(): void
     {
+        this.nextTeam();
+        this.notifyPlayers();
+    }
+
+    protected nextTeam(): void
+    {
         this._turn++;
         this._activeTeam = this._teams[this._turn % this._numTeams];
-    
-        this.notifyPlayers();
     }
 }

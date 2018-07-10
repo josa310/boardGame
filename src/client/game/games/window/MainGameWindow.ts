@@ -32,6 +32,7 @@ export class MainGameWindow extends InteractionWindow
         this._playerColors[Team.BLUE] = "blue";
         this._playerColors[Team.RED] = "red";
         this._playerColors[Team.NEUTRAL] = "grey";
+        this._playerColors[-1] = "yellow";
     }
 
     protected createElements(): void

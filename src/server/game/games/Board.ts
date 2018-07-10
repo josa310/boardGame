@@ -5,6 +5,7 @@ export class Board
 {
     public static readonly WIDTH: number = 5;
     public static readonly HEIGHT: number = 5;
+    public static readonly TEAM_FIELD_CNT: number = 5;
 
     protected _words: string[][];
     protected _occupations: number[][];
@@ -84,6 +85,19 @@ export class Board
         return this._occupations[row][col];
     }
 
+    public isRevealed(idx: number): boolean
+    {
+        if (idx < 0)
+        {
+            return false;
+        }
+        
+        const row: number = Math.floor(idx / Board.WIDTH);
+        const col: number = Math.floor(idx % Board.WIDTH);
+
+        return this._revealed[row][col];
+    }
+
     protected resetWords(): void
     {
         this._avalibleWords = this._avalibleWords.concat(this._usedWords);
@@ -92,6 +106,11 @@ export class Board
     
     public reset(): void
     {
+        if (this._avalibleWords.length < Board.WIDTH * Board.HEIGHT)
+        {
+            this.resetWords();
+        }
+
         this._words = new Array<Array<string>>(Board.WIDTH);
         this._occupations = new Array<Array<number>>(Board.WIDTH);
         this._revealed = new Array<Array<boolean>>(Board.WIDTH);
@@ -110,8 +129,8 @@ export class Board
             }   
         }        
 
-        this.occupyField(5, Team.RED);
-        this.occupyField(5, Team.BLUE);
+        this.occupyField(Board.TEAM_FIELD_CNT, Team.RED);
+        this.occupyField(Board.TEAM_FIELD_CNT, Team.BLUE);
         this.occupyField(1, -1);
     }
 
