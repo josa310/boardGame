@@ -47,6 +47,10 @@ export class GameOverWindow extends InteractionWindow
         this._gameOverText.innerText = "GAME OVER";
         this._buttonContainer.appendChild(this._buttons[Buttons.NEW_GAME].node);
 
+        this._gameOverText.classList.add("gameOverText");
+        this._winningTeamText.classList.add("gameOverText");
+
+        this._window.classList.add("gameOverWindow");
         this._window.appendChild(this._gameOverText);
         this._window.appendChild(this._winningTeamText);
         this._window.appendChild(this._buttonContainer);
@@ -54,7 +58,7 @@ export class GameOverWindow extends InteractionWindow
 
     protected initButtons(): void
     {
-        this.initButton(Buttons.NEW_GAME, () => this.onNewGame(), Buttons.NEW_GAME);
+        this.initButton(Buttons.NEW_GAME, () => this.onNewGame(), Buttons.NEW_GAME, undefined, "menuButton");
     }
 
     protected onNewGame(): void

@@ -62,6 +62,7 @@ export class RoleSelectWindow extends InteractionWindow
         let buttonContainer = document.createElement("p");
         buttonContainer.appendChild(this._buttons[ButtonList.OK].node);
 
+        this._window.id = "interactionWindow";
         this._window.appendChild(teamSelectSection);
         this._window.appendChild(roleSelectSection);
         this._window.appendChild(buttonContainer);
@@ -69,13 +70,13 @@ export class RoleSelectWindow extends InteractionWindow
 
     protected initInputs(): void
     {
-        this.createInput(InputList.TEAM, InputTypes.SELECTION);
-        this.createInput(InputList.ROLE, InputTypes.SELECTION);
+        this.createInput(InputList.TEAM, InputTypes.SELECTION, undefined, "inputField selection");
+        this.createInput(InputList.ROLE, InputTypes.SELECTION, undefined, "inputField selection");
     }
 
     protected initButtons(): void
     {
-        this.initButton(ButtonList.OK, () => this.onOK(), ButtonList.OK);
+        this.initButton(ButtonList.OK, () => this.onOK(), ButtonList.OK, undefined, "menuButton");
     }
  
     protected onOK(): void

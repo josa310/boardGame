@@ -1,22 +1,225 @@
+body
+{
+    background: radial-gradient(#b9b6b6 50%, #757575);
+}
+
 p 
 {
     margin: 0;
 }
 
+.window
+{
+    text-align: center;
+}
+
+.gameOverText
+{
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.passButton
+{
+    font-family: sans-serif;
+    font-weight: bold;
+    background: radial-gradient(#c6c6c6, #747474);
+    color: #00003b;
+    border-style: solid;
+    border-color: #00003b;
+    border-radius: 0.5vw;
+}
+
+.inputField
+{
+    font-family: monospace;
+    font-weight: bold;
+    text-shadow: #0f122070 2px 2px 4px;
+    vertical-align: middle;
+}
+
+.inputField:focus 
+{ 
+    outline: none;
+    border-color: #001ea8;
+    box-shadow: 0 0 10px #051e92;
+}
+
+#teamDisplay
+{  
+    font-family: fantasy;
+    text-shadow: #73737370 3px 3px 2px;
+    margin: auto;
+    border-radius: 0.8vw;
+    border-width: 1px;
+    border-style: solid;
+}
+
+#interactionWindow
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+}
+
+.field
+{
+    font-family: sans-serif;
+    text-shadow: #0000005e 2px 2px 6px;
+    color: black;
+    font-weight: bold;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5%;
+    margin: 1px;
+}
+
+.menuButton
+{
+    height: 3vw;
+    margin: 0.5vw;
+    width: 10vw;
+    font-size: 2vh;
+    font-family: monospace;
+    font-weight: bold;
+    vertical-align: middle;
+    box-shadow: 5px 5px 20px #1c1a41de;
+}
+
+.gameOverWindow
+{
+    background-color: #973d3d;
+}
+
 @media screen and (orientation: landscape) 
 {
+    body
+    {
+        height: 100vh;
+    }
+
+    .passButton
+    {
+        width: 25vh;
+        height: 5vh;
+        margin: 0.5vh;
+        font-size: 4vh;
+    }
+
+    .inputField
+    {
+        width: 30vh;
+        height: 3vh;
+        font-size: 2vh;
+        border-radius: 0.4vh;
+        margin: 1vh;
+    }
+
+    .selection
+    {
+        height: 3.8vh;
+    }
+
     .field
     {
         width: 17vh;
         height: 17vh;
+        font-size: 3vh;
+    }
+
+    #teamDisplay
+    {
+        width: 86vh;
+        height: 5vh;
+        font-size: 4vh;
+    }
+
+    .menuButton
+    {
+        height: 3.8vh;
+        margin: 0.5vh;
+        width: 12vh;
+        font-size: 2vh;
+    }
+
+    .gameOverWindow
+    {
+        width: 45vh;
+        height: 30vh;
+        border-radius: 2vh;
+    }
+
+    .gameOverText
+    {
+        font-size: 5vh;
+        margin: 2vh;
     }
 }
   
 @media screen and (orientation: portrait) 
 {
+    body
+    {
+        height: 100vw;
+    }
+
+    .passButton
+    {
+        width: 25vh;
+        height: 5vh;
+        margin: 0.5vh;
+        font-size: 4vh;
+    }
+
+    .inputField
+    {
+        width: 30vw;
+        height: 3vw;
+        font-size: 2vw;
+        border-radius: 0.4vw;
+        margin: 1vw;
+    }
+
+    .selection
+    {
+        height: 3.8vh;
+    }
+
     .field
     {
         width: 17vw;
         height: 17vw;
+        font-size: 3vw;
+    }
+
+    #teamDisplay
+    {
+        width: 86vw;
+        height: 5vw;
+        font-size: 4vw;
+    }
+
+    .menuButton
+    {
+        height: 3.8vw;
+        margin: 0.5vw;
+        width: 12vw;
+        font-size: 2vw;
+    }
+
+    .gameOverText
+    {
+        font-size: 5vw;
+        margin: 2vw;
+    }
+
+    .gameOverWindow
+    {
+        width: 45vw;
+        height: 30vw;
+        border-radius: 2vw;
     }
 }

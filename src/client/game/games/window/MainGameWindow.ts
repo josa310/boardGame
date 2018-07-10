@@ -1,11 +1,11 @@
 import { InteractionWindow } from "../../../ui/window/InteractionWindow";
 import { Command, Commands } from "../../../../common/Command";
-import { Team } from "../../../../common/Enums";
+import { Team, PlayerRole } from "../../../../common/Enums";
 import { CommandEvent } from "../../../event/CommandEvent";
 
 enum Buttons
 {
-    PASS = "Pass"
+    PASS = "PASS!"
 }
 
 export class MainGameWindow extends InteractionWindow
@@ -13,13 +13,13 @@ export class MainGameWindow extends InteractionWindow
     protected _command: Command;
     protected _commandEvent: CommandEvent;
     protected _teamDisplay: HTMLDivElement;
-    protected _playerColors: {[key: string]: string};
+    protected _fieldColors: {[key: string]: string};
 
     constructor(root: HTMLElement)
     {
         super(root);
 
-        this._playerColors = {};
+        this._fieldColors = {};
         this._command = new Command();
         this._commandEvent = new CommandEvent();
         this._commandEvent.command = this._command;
@@ -29,10 +29,11 @@ export class MainGameWindow extends InteractionWindow
 
     protected setPlayerColors(): void
     {
-        this._playerColors[Team.BLUE] = "blue";
-        this._playerColors[Team.RED] = "red";
-        this._playerColors[Team.NEUTRAL] = "grey";
-        this._playerColors[-1] = "yellow";
+        this._fieldColors[Team.BLUE] = "#03a9f4";
+        this._fieldColors[Team.RED] = "#F22613";
+        this._fieldColors[Team.NEUTRAL] = "rgb(85, 85, 85)";
+        this._fieldColors[-2] = "rgb(209, 209, 209)";
+        this._fieldColors[-1] = "#2C3E50";
     }
 
     protected createElements(): void
@@ -40,6 +41,7 @@ export class MainGameWindow extends InteractionWindow
         super.createElements();
 
         this._teamDisplay = document.createElement("div");
+        this._teamDisplay.id = "teamDisplay";
         this._window.appendChild(this._teamDisplay);
 
         for (let i: number = 0; i < 5; i++)
@@ -53,7 +55,9 @@ export class MainGameWindow extends InteractionWindow
         }
 
         let passButtonContainer: HTMLElement = document.createElement("div");
-        passButtonContainer.appendChild(this._buttons[Buttons.PASS].node);
+        let passButton: HTMLElement = this._buttons[Buttons.PASS].node;
+        passButtonContainer.appendChild(passButton);
+        passButton.classList.add("passButton");
 
         this._window.appendChild(passButtonContainer);
     }
@@ -81,12 +85,23 @@ export class MainGameWindow extends InteractionWindow
     {
         super.show(command);
 
-        let team: string = command.next();
-        this._teamDisplay.style.backgroundColor = this._playerColors[team];
+        const team: string = command.next();
+        const playerRole: number = command.nextInt();
+        const activeTeam: string = command.next();
+        const isActive = (team == activeTeam)
 
-        const isActive: boolean = team == command.next();
-        this._teamDisplay.innerText = (isActive) ? "Your turn." : "Varja meg!";
+        this._teamDisplay.style.backgroundColor = this._fieldColors[team];
+        this._teamDisplay.innerText = (isActive) ? "Your turn." : "Please wait!";
         
+        if (team == Team.NEUTRAL.toString())
+        {
+            this._teamDisplay.innerText = "";
+            this._teamDisplay.style.backgroundColor = this._fieldColors[activeTeam];
+        }
+        
+        const showPassButton: boolean = isActive && (playerRole != PlayerRole.MASTER);
+        this._buttons[Buttons.PASS].node.style.display = showPassButton ? "" : "none";
+
         this.enableButtons(isActive);
 
         let text: string = command.next();
@@ -94,7 +109,7 @@ export class MainGameWindow extends InteractionWindow
         while (text)
         {
             this._buttons[idx].setText(text);
-            this._buttons[idx].node.style.backgroundColor = this._playerColors[command.next()];
+            this._buttons[idx].node.style.backgroundColor = this._fieldColors[command.next()];
 
             text = command.next();
             idx++;

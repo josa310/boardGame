@@ -1,5 +1,4 @@
-import fs = require("fs");
-import { Team, PlayerRole } from "../../../common/Enums";
+import { Team } from "../../../common/Enums";
 
 export class Board
 {
@@ -37,7 +36,7 @@ export class Board
             for (let j: number = 0; j < Board.HEIGHT; j++)
             {
                 retVal.push(this._words[i][j]);
-                retVal.push((this._revealed[i][j] || revealed) ? this._occupations[i][j].toString() : Team.NEUTRAL.toString());
+                retVal.push((this._revealed[i][j] || revealed) ? this._occupations[i][j].toString() : "-2");
             }
         }
 

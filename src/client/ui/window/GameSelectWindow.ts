@@ -44,21 +44,22 @@ export class GameSelectWindow extends InteractionWindow
         newGameSection.appendChild(this._inputs[InputList.NEW_GAME_TYPE_FIELD].node);
         newGameSection.appendChild(this._buttons[ButtonList.START_NEW].node);
 
+        this._window.id = "interactionWindow";
         this._window.appendChild(gameSelectSection);
         this._window.appendChild(newGameSection);
     }
 
     protected initInputs(): void
     {
-        this.createInput(InputList.GAME_SELECT, InputTypes.SELECTION);
-        this.createInput(InputList.NEW_GAME_NAME_FIELD, InputTypes.TEXT);
-        this.createInput(InputList.NEW_GAME_TYPE_FIELD, InputTypes.SELECTION);
+        this.createInput(InputList.GAME_SELECT, InputTypes.SELECTION, undefined, "inputField selection");
+        this.createInput(InputList.NEW_GAME_NAME_FIELD, InputTypes.TEXT, undefined, "inputField");
+        this.createInput(InputList.NEW_GAME_TYPE_FIELD, InputTypes.SELECTION, undefined, "inputField selection");
     }
 
     protected initButtons(): void
     {
-        this.initButton(ButtonList.JOIN, () => this.onJoin(), ButtonList.JOIN);
-        this.initButton(ButtonList.START_NEW, () => this.onStartNew(), ButtonList.START_NEW);
+        this.initButton(ButtonList.JOIN, () => this.onJoin(), ButtonList.JOIN, undefined, "menuButton");
+        this.initButton(ButtonList.START_NEW, () => this.onStartNew(), ButtonList.START_NEW, undefined, "menuButton");
     }
 
     protected onJoin(): void

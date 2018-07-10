@@ -162,7 +162,7 @@ export class CodeNames extends Game
         const board: string[] = this._board.getBoard(player.role == PlayerRole.MASTER);
         
         this._command.clear();
-        this._command.push(Commands.GAME_DATA).push(player.team).push(this._activeTeam);
+        this._command.push(Commands.GAME_DATA).push(player.team).push(player.role).push(this._activeTeam);
         for (let data of board)
         {
             this._command.push(data);

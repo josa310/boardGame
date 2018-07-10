@@ -49,6 +49,7 @@ export class InteractionWindow extends EventDispatcher
     protected createElements(): void
     {
         this._window = this.createDiv("interactionWindow");
+        this._window.classList.add("window");
     }
 
     protected initButtons(): void

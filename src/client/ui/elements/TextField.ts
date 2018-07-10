@@ -17,6 +17,7 @@ export class TextField extends Input
     protected createNode(): void 
     {
         this._node = document.createElement("input");
+        this._node.classList.add("inputField");
         this._node.onchange = () => this.onChange();
         this._node.type = "text";
     }  
