@@ -89,9 +89,19 @@ p
     box-shadow: 5px 5px 20px #1c1a41de;
 }
 
-.gameOverWindow
+#interactionWindow.gameOverWindow
 {
     background-color: #973d3d;
+    border-style: double;
+    border-width: 10px;
+    animation-name: border-effect;
+    animation-duration: 4s;
+}
+
+@keyframes border-effect
+ {
+    from {border-image: linear-gradient(0deg, #010014, #d6d5ff, #02011b) 1;}
+    to {border-image: linear-gradient(360deg, #010014, #d6d5ff, #02011b) 1;}
 }
 
 @media screen and (orientation: landscape) 
@@ -145,7 +155,7 @@ p
         font-size: 2vh;
     }
 
-    .gameOverWindow
+    #interactionWindow.gameOverWindow
     {
         width: 45vh;
         height: 30vh;
@@ -216,7 +226,7 @@ p
         margin: 2vw;
     }
 
-    .gameOverWindow
+    #interactionWindow.gameOverWindow
     {
         width: 45vw;
         height: 30vw;
