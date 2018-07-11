@@ -1,6 +1,16 @@
+/* body
+{
+    
+} */
+
 body
 {
-    background: radial-gradient(#b9b6b6 50%, #757575);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: #1D1F20;
+    background: radial-gradient(#393e40 50%, #1D1F20);
 }
 
 p 
@@ -58,10 +68,7 @@ p
 #interactionWindow
 {
     position: absolute;
-    top: 50%;
-    left: 50%;
     width: 100%;
-    transform: translate(-50%, -50%);
 }
 
 .field
@@ -79,11 +86,7 @@ p
 
 .menuButton
 {
-    height: 3vw;
-    margin: 0.5vw;
-    width: 10vw;
-    font-size: 2vh;
-    font-family: monospace;
+
     font-weight: bold;
     vertical-align: middle;
     box-shadow: 5px 5px 20px #1c1a41de;
@@ -91,17 +94,14 @@ p
 
 #interactionWindow.gameOverWindow
 {
-    background-color: #973d3d;
-    border-style: double;
-    border-width: 10px;
-    animation-name: border-effect;
-    animation-duration: 4s;
-}
-
-@keyframes border-effect
- {
-    from {border-image: linear-gradient(0deg, #010014, #d6d5ff, #02011b) 1;}
-    to {border-image: linear-gradient(360deg, #010014, #d6d5ff, #02011b) 1;}
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    position: relative;
+    align-items: center;
+    font-family: monospace;
+    border: solid black 6px;
+    background: linear-gradient(140deg, #1e2021, #46494a, #1e2021);
 }
 
 @media screen and (orientation: landscape) 
@@ -160,6 +160,7 @@ p
         width: 45vh;
         height: 30vh;
         border-radius: 2vh;
+        font-size: 4vh;
     }
 
     .gameOverText
@@ -231,5 +232,6 @@ p
         width: 45vw;
         height: 30vw;
         border-radius: 2vw;
+        font-size: 4vw;
     }
 }

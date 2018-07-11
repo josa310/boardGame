@@ -9,6 +9,7 @@ export class WaitForPlayersWindow extends InteractionWindow
         let messageWindow: HTMLElement = document.createElement("div");
         messageWindow.innerText = "Wait for other players to join";
 
+        this._window.classList.add("gameOverWindow");
         this._window.appendChild(messageWindow);
     }
 }
