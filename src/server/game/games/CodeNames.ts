@@ -16,6 +16,7 @@ export class CodeNames extends Game
     protected _teams: Team[];
     protected _activeTeam: Team;
     protected _teamPoints: {[key: number]: number};
+    protected _targetPoints: {[key: number]: number};
 
     constructor(name: string, id: number)
     {
@@ -29,6 +30,8 @@ export class CodeNames extends Game
         this._teams = new Array<Team>();
         this._type = GameTypes.CODE_NAMES;
         this._teamPoints = {};
+        this._targetPoints = {};
+        this._activeTeam = Team.BLUE;
 
         this.addTeam(Team.RED);
         this.addTeam(Team.BLUE);
@@ -85,7 +88,7 @@ export class CodeNames extends Game
                 if (this._teamPoints[fieldOccupation] != undefined)
                 {
                     this._teamPoints[fieldOccupation]++;
-                    if (this._teamPoints[fieldOccupation] == Board.TEAM_FIELD_CNT)
+                    if (this._teamPoints[fieldOccupation] == this._targetPoints[fieldOccupation])
                     {
                         this.gameOver(fieldOccupation);
                         return;
@@ -230,13 +233,19 @@ export class CodeNames extends Game
 
     protected initGame(): void
     {
+        this._activeTeam = this._teams[(this._turn + 1) % this._numTeams];
         for (let key in this._teamPoints)
         {
             this._teamPoints[key] = 0;
+            this._targetPoints[key] = Board.TEAM_FIELD_CNT;
+            if (this._activeTeam.toString() != key)
+            {
+                this._targetPoints[key]--;
+            }
         }
 
         this._isActive = true;
-        this._board.reset();
+        this._board.reset(this._activeTeam);
         this.nextTurn();
     }
     

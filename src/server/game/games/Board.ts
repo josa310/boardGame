@@ -1,10 +1,11 @@
+import { Team } from './../../../common/Enums';
 import { Team } from "../../../common/Enums";
 
 export class Board
 {
     public static readonly WIDTH: number = 5;
     public static readonly HEIGHT: number = 5;
-    public static readonly TEAM_FIELD_CNT: number = 5;
+    public static readonly TEAM_FIELD_CNT: number = 9;
 
     protected _words: string[][];
     protected _occupations: number[][];
@@ -51,27 +52,94 @@ export class Board
         // fs.readFile( '/words.txt', (e: NodeJS.ErrnoException, data: Buffer) => this.setAbalibleWords(e, data));
 
         this.setAbalibleWords(null, null);
-        this.reset();
+        this.reset(Team.BLUE);
     }
 
     protected setAbalibleWords(err: NodeJS.ErrnoException, data: Buffer): void
     {
         // console.log(data.toString());'
-        this._avalibleWords = ["asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd",
-            "asdh", "tytyu", "bnmc", "iopsad", "uytasd"];
+        this._avalibleWords = [
+            "Szürke", "Szuperhős", "Taxi", "Tábla", "Egyszarvú",
+            "Egyenes", "Tűz", "Tér", "Szám", "Szakit",
+            "Csomó", "Csokoládé", "Arc", "Jeti", "Csap",
+            "Cirkusz", "Béka", "Beethoven", "Amazon", "Áru",
+            "Banán", "Banda", "Kacsacsőrű", "Kaktusz", "Haj",
+            "Hajó", "Szén", "Szemét", "Egér", "Egészség",
+            "Hid", "Hét", "Köt", "Központ", "Virág",
+            "Sonka", "Ordit", "Fekete", "Tök", "Tudós",
+            "Bolt", "Bomba", "Volt", "Viz", "Ketchup",
+            "Kéz", "Ágy", "Ajtó", "Fúj", "Föld",
+            "Forrás", "Forma", "Öv", "Öl", "Berlin",
+            "Baba", "Tüdő", "Tüske", "Leves", "Lézer",
+            "Jár", "Jogász", "Afrika", "Adó", "Toll",
+            "Tolvaj", "Loch Ness", "Lélek", "Jég", "Jegy",
+            "Kulcs", "Láb", "Zár", "Zebra", "Stadion",
+            "Száj", "Nővér", "Nyit", "Szikra", "Szerencse",
+            "Agy", "Ág", "Fog", "Figura", "Szakasz",
+            "Szakács", "Gumi", "Gitár", "Napóleon", "Narancs",
+            "Sajt", "Homok", "Kemény", "Kenguru", "Alpok",
+            "Arany", "Hollywood", "Hold", "Macska", "Magyar",
+            "Nap", "Követ", "Piramis", "Psztoly", "Fut",
+            "Fok", "Könnyű", "Korona", "Lő", "Láda",
+            "Gáz", "Gazda", "Shakespeare", "Skorpió", "Orvos",
+            "Oroszlán", "Kritikus", "Kréta", "Tokió", "Tojás",
+            "Ausztrália", "Atom", "Koncert", "Koporsó", "Tánc",
+            "Tányér", "Furulya", "Felhő", "Kalóz", "Távolság",
+            "Apró", "Angyal", "Anya", "Anyag", "Sas",
+            "Sor", "Labda", "Láng", "Gyűrű", "Hóember",
+            "Hideg", "Haza", "Ruha", "Rulett", "Boszorkány",
+            "Búvár", "Mese", "Méreg", "Üveg", "Vad",
+            "Bank", "Báb", "Háború", "Hó", "Sötét",
+            "Sárkány", "Kor", "Korbács", "Ügyvéd", "Ügynök",
+            "Meleg", "Mentők", "Fal", "Fáklya", "Indián",
+            "Iskola", "Cápa", "Cesar", "Fagylalt", "Élet",
+            "Zeus", "Élet", "Körte", "Kórház", "Édes",
+            "Ég", "Puska", "Pók", "Mér", "Mer",
+            "Határ", "Himalája", "Bot", "Bálna", "Pingvin",
+            "Pénz", "Négyzet", "Nehéz", "Fedél", "Féreg",
+            "Malac", "Mexikó", "Szin", "Szinház", "Birka",
+            "Biró", "Európa", "Idő", "Hajt", "Hal",
+            "Idegen", "Húr", "Kereszt", "Keret", "Katona",
+            "Kaszinó", "Bőr", "Benzin", "Pohár", "Pite",
+            "Rózsa", "Róma", "Kártya", "Kárpátok", "Hercegnő",
+            "Helikopter", "Vár", "Űr", "Gerinc", "Gyémánt",
+            "Kör", "Kő", "Görög", "Gomb", "Palack",
+            "Pálya", "Szaturnusz", "Szarv", "Teflon", "Tej",
+            "Mű", "Manó", "Olaj", "Nyúl", "Képernyő",
+            "Kerek", "Zseni", "Zöld", "Műhold", "Nadrág",
+            "Lámpa", "Lép", "Árnyék", "Amerika", "Autó",
+            "Azték", "Levegő", "Levél", "Kenyér", "Kentaur",
+            "Óra", "Óriás", "Méz", "Milliomos", "Dél",
+            "Daru", "Tévé", "Tiszta", "Dob", "Duna",
+            "Hatalom", "Harang", "Kel", "Kém", "Ár",
+            "Anglia", "Bánya", "Barát", "Tégla", "Tanár",
+            "Fű", "Függ", "Erő", "Éjszaka", "Petőfi",
+            "Pilóta", "Rák", "Radir", "Kard", "Kar",
+            "Atlantisz", "Aztal", "Csavar", "Csempész", "Álom",
+            "Alma", "Erdő", "Einstein", "Csizma", "Csirke",
+            "Teherautó", "Szellem", "Oszlop", "Oszt", "Csöpp",
+            "Cső", "Fül", "Fűszer", "Repül", "Répa",
+            "Robot", "Rigó", "Nyom", "Nő", "Part",
+            "Pamut", "Kút", "Királynő", "Peking", "Patkó",
+            "Betegség", "Bika", "Tető", "Természet", "Dió",
+            "Denevér", "Csiga", "Csillag", "Szem", "Tavasz",
+            "Alak", "Alföld", "Papir", "Park", "New York",
+            "Nindzsa", "Gyöngy", "Gyökér", "Majom", "Mikroszkóp",
+            "Vitamin", "Vitorla", "Cérna", "Chaplin", "Kormány",
+            "Kölyök", "Udvar", "Ujj", "London", "Lovag",
+            "T-Rex", "Törpe", "Sivatag", "Fej", "Villa",
+            "Világos", "Rendőr", "Rakéta", "Másol", "Mar",
+            "Torony", "Játék", "Torta", "Opera", "Olümposz",
+            "Szék", "Szél", "Kés", "Ksztyű", "Medve",
+            "Mátyás", "Láz", "Lap", "Háló", "Halál",
+            "Térkép", "Tű", "Lyuk", "Ló", "Hullám",
+            "Vas", "Vezet", "Mező", "Moszkva", "Kocka",
+            "Kutya", "Kód", "Király", "Templom", "Teleszkóp",
+            "Polip", "Pont", "Csatorna", "Cipő", "Sir",
+            "Sir", "Sin", "Elem", "Ejtőernyő", "Mamut",
+            "Műanyag", "Szoknya", "Sziv", "Motor", "Mozi",
+            "Úr", "Út", "Poláp"
+        ];
     }
 
     public pickField(idx: number): number
@@ -103,7 +171,7 @@ export class Board
         this._usedWords = new Array<string>();
     }
     
-    public reset(): void
+    public reset(startingTeam: Team): void
     {
         if (this._avalibleWords.length < Board.WIDTH * Board.HEIGHT)
         {
@@ -128,8 +196,8 @@ export class Board
             }   
         }        
 
-        this.occupyField(Board.TEAM_FIELD_CNT, Team.RED);
-        this.occupyField(Board.TEAM_FIELD_CNT, Team.BLUE);
+        this.occupyField(Board.TEAM_FIELD_CNT - (startingTeam == Team.RED ? 0 : 1), Team.RED);
+        this.occupyField(Board.TEAM_FIELD_CNT - (startingTeam == Team.BLUE ? 0 : 1), Team.BLUE);
         this.occupyField(1, -1);
     }
 
